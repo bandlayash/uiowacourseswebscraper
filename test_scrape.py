@@ -72,11 +72,11 @@ def getCourses():
         print(progress_update)
     return courses
 
-def export_to_csv(courses, filename="courses.csv"):
+def export_to_csv(courses, filename="test_courses.csv"):
     # Open a file for writing
     with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
         # Define the fieldnames with your desired column names
-        fieldnames = ['deptName', 'courseLevel', 'courseTitle']
+        fieldnames = ['deptName1', 'courseLevel1', 'courseTitle1']
         
         # Create a DictWriter
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -87,9 +87,9 @@ def export_to_csv(courses, filename="courses.csv"):
         # Write the data rows with the correct mapping
         for course in courses:
             writer.writerow({
-                'deptName': course['dept_code'],
-                'courseLevel': course['course_number'],
-                'courseTitle': course['title']
+                'deptName1': course['dept_code'],
+                'courseLevel1': course['course_number'],
+                'courseTitle1': course['title']
             })
     
     print(f"CSV file '{filename}' has been created successfully.")
