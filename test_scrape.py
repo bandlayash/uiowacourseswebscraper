@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import re
+import csv
 
 dept_names = []
 
@@ -19,10 +20,12 @@ for link in soup.find_all('a', href = True):
                 dept_names.append(dept_name)
 dept_names = list(dict.fromkeys(dept_names))
 
+# get courses from all of the departments
 def getCourses():
     courses = []
     completed_depts = []
 
+    # loop through all the depts and get courses from every dept
     for code in dept_names:
         dept_url = f"{base_url}{code}/"
 
@@ -64,15 +67,44 @@ def getCourses():
             return []
         
         completed_depts.append(code)
+        #progress update for every dept completed
         progress_update = f"{code.upper()} Completed"
         print(progress_update)
     return courses
 
+def export_to_csv(courses, filename="courses.csv"):
+    # Open a file for writing
+    with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+        # Define the fieldnames with your desired column names
+        fieldnames = ['deptName', 'courseLevel', 'courseTitle']
+        
+        # Create a DictWriter
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        
+        # Write the header row
+        writer.writeheader()
+        
+        # Write the data rows with the correct mapping
+        for course in courses:
+            writer.writerow({
+                'deptName': course['dept_code'],
+                'courseLevel': course['course_number'],
+                'courseTitle': course['title']
+            })
+    
+    print(f"CSV file '{filename}' has been created successfully.")
 
                 
 
 def main():
-    print(getCourses())
+    courses = getCourses()
+    print(f"Found {len(courses)} courses")
+
+    # example
+    print(courses[1])
+
+    # export
+    export_to_csv(courses)
 
 if __name__ == "__main__":
     main()
