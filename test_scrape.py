@@ -42,18 +42,16 @@ def getCourses():
                         
                         # Parse using regex
                         # Pattern matches: code prefix (CS:), course number (1000), title, and s.h.
-                        pattern = r'([A-Z]+:)(\d+)\s+(.*?)\s+(\d+\s+s\.h\.)'
+                        pattern = r'([A-Z]+:\d+)\s+(.*?)\s+(\d+\s+s\.h\.)'
                         match = re.match(pattern, course_text)
                         
                         if match:
-                            code_prefix = match.group(1).strip(':')  # Remove the colon
-                            course_number = match.group(2)
-                            title = match.group(3).strip()
+                            course_code = match.group(1) 
+                            title = match.group(2).strip()
                             
                             # Create a dictionary or tuple with the parsed information
                             course_info = {
-                                'dept_code': code_prefix,
-                                'course_number': course_number,
+                                'course_code': course_code,
                                 'title': title
                             }
                             
@@ -76,7 +74,7 @@ def export_to_csv(courses, filename="test_courses.csv"):
     # Open a file for writing
     with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
         # Define the fieldnames with your desired column names
-        fieldnames = ['deptName1', 'courseLevel1', 'courseTitle1']
+        fieldnames = ['course_code', 'course_title']
         
         # Create a DictWriter
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -87,9 +85,8 @@ def export_to_csv(courses, filename="test_courses.csv"):
         # Write the data rows with the correct mapping
         for course in courses:
             writer.writerow({
-                'deptName1': course['dept_code'],
-                'courseLevel1': course['course_number'],
-                'courseTitle1': course['title']
+                'course_code': course['course_code'],
+                'course_title': course['title']
             })
     
     print(f"CSV file '{filename}' has been created successfully.")
