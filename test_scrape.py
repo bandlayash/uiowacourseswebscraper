@@ -17,8 +17,12 @@ for link in soup.find_all('a', href = True):
             if 'class' not in link.attrs:
                 dept_name = segment[1]
                 dept_names.append(dept_name)
+dept_names = list(dict.fromkeys(dept_names))
 
 def getCourses():
+    courses = []
+    completed_depts = []
+
     for code in dept_names:
         dept_url = f"{base_url}{code}/"
 
@@ -26,7 +30,6 @@ def getCourses():
             response = requests.get(dept_url)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
-                courses = []
                 course_blocks = soup.find_all('div', class_='courseblock')
 
                 for block in course_blocks:
@@ -52,12 +55,17 @@ def getCourses():
                             }
                             
                             courses.append(course_info)
+                            
             else:
                 print(f"Failed to access {dept_url}, status code: {response.status_code}")
                 return []
         except Exception as e:
             print(f"Error accessing {dept_url}: {e}")
             return []
+        
+        completed_depts.append(code)
+        progress_update = f"{code.upper()} Completed"
+        print(progress_update)
     return courses
 
 
